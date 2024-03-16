@@ -1,28 +1,36 @@
 import tkinter as tk
 from tkinter import messagebox, Text
+from PIL import Image, ImageTk
 import requests
 
 class PlagiarismDetectorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Plagiarism Detector")
-        self.root.geometry("500x300")
+        self.root.geometry("600x400")
         self.root.configure(background="#f0f0f0")
 
-        self.heading_label = tk.Label(root, text="Plagiarism Detector", font=("Arial", 20), bg="#f0f0f0")
-        self.heading_label.grid(row=0, column=0, columnspan=2, pady=(20,10))
+        # Load and resize an image for the GUI using Pillow (PIL fork)
+        image = Image.open("logo.png")  # Replace "logo.png" with your image file
+        image = image.resize((150, 150), Image.LANCZOS)  # Resize with Lanczos resampling
+        self.logo = ImageTk.PhotoImage(image)
 
-        self.text_label = tk.Label(root, text="Enter Text:", font=("Arial", 12), bg="#f0f0f0")
+        self.logo_label = tk.Label(root, image=self.logo, bg="#f0f0f0")
+        self.logo_label.grid(row=0, column=0, padx=10, pady=10)
+
+        self.heading_label = tk.Label(root, text="Plagiarism Detector", font=("Arial", 24), bg="#f0f0f0", fg="blue")
+        self.heading_label.grid(row=0, column=1, columnspan=2, pady=(20,10))
+
+        self.text_label = tk.Label(root, text="Enter Text:", font=("Arial", 16), bg="#f0f0f0", fg="black")
         self.text_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
-        self.text_entry = Text(root, width=40, height=10, font=("Arial", 12))
-        self.text_entry.grid(row=1, column=1, padx=10, pady=5, sticky="w")
+        self.text_entry = Text(root, width=50, height=10, font=("Arial", 12))
+        self.text_entry.grid(row=1, column=1, columnspan=2, padx=10, pady=5, sticky="w")
 
-        self.detect_button = tk.Button(root, text="Detect Plagiarism (Wikipedia)", font=("Arial", 14), command=self.detect_plagiarism_wikipedia)
-        self.detect_button.grid(row=2, column=0, columnspan=2, pady=(20,10))
+        self.detect_button = tk.Button(root, text="Detect Plagiarism", font=("Arial", 16), command=self.detect_plagiarism_wikipedia, bg="green", fg="white")
+        self.detect_button.grid(row=2, column=0, columnspan=3, pady=(20,10))
 
-        # Configure row and column weights to make the window expandable
         self.root.grid_rowconfigure((3,4), weight=1)
-        self.root.grid_columnconfigure((0,1), weight=1)
+        self.root.grid_columnconfigure((0,1,2), weight=1)
 
     def detect_plagiarism_wikipedia(self):
         text = self.text_entry.get("1.0", tk.END).strip()
