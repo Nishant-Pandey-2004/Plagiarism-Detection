@@ -43,7 +43,8 @@ class PlagiarismDetectorApp:
             'action': 'query',
             'list': 'search',
             'srsearch': text,
-            'format': 'json'
+            'format': 'json',
+            'srlimit': 10  # Limiting the number of search results to improve relevance
         }
 
         try:
@@ -53,9 +54,11 @@ class PlagiarismDetectorApp:
 
             # Extract search results if available
             if 'query' in data and 'search' in data['query']:
-                search_results_count = len(data['query']['search'])
+                search_results = data['query']['search']
+                relevant_results = [result for result in search_results if self.is_relevant_result(result)]
+                relevant_results_count = len(relevant_results)
                 total_articles_count = data['query']['searchinfo']['totalhits']
-                plagiarism_percentage = (search_results_count / total_articles_count) * 100
+                plagiarism_percentage = (relevant_results_count / total_articles_count) * 100
                 return plagiarism_percentage
             else:
                 return 0
@@ -63,6 +66,11 @@ class PlagiarismDetectorApp:
         except Exception as e:
             print("Error occurred:", e)
             return 0
+
+    def is_relevant_result(self, result):
+        # Check if a search result is relevant based on specific criteria
+        # You can customize this method to define relevance based on your requirements
+        return 'title' in result and 'snippet' in result
 
 if __name__ == "__main__":
     root = tk.Tk()
