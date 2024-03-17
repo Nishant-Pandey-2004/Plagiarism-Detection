@@ -1,13 +1,14 @@
 import tkinter as tk
-from tkinter import messagebox, Text
+from tkinter import filedialog, messagebox, Text
 from PIL import Image, ImageTk
 import requests
+import subprocess
 
 class PlagiarismDetectorApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Plagiarism Detector")
-        self.root.geometry("600x400")
+        self.root.geometry("800x600")
         self.root.configure(background="#f0f0f0")
 
         # Load and resize an image for the GUI using Pillow (PIL fork)
@@ -19,7 +20,7 @@ class PlagiarismDetectorApp:
         self.logo_label.grid(row=0, column=0, padx=10, pady=10)
 
         self.heading_label = tk.Label(root, text="Plagiarism Detector", font=("Arial", 24), bg="#f0f0f0", fg="blue")
-        self.heading_label.grid(row=0, column=1, columnspan=2, pady=(20,10))
+        self.heading_label.grid(row=0, column=1, columnspan=2, pady=(20,10), sticky="n")
 
         self.text_label = tk.Label(root, text="Enter Text:", font=("Arial", 16), bg="#f0f0f0", fg="black")
         self.text_label.grid(row=1, column=0, padx=10, pady=5, sticky="e")
@@ -31,6 +32,9 @@ class PlagiarismDetectorApp:
 
         self.root.grid_rowconfigure((3,4), weight=1)
         self.root.grid_columnconfigure((0,1,2), weight=1)
+
+        self.back_button = tk.Button(root, text="<- Back", font=("Arial", 14), command=self.return_back)
+        self.back_button.grid(row=6, column=0, columnspan=3, pady=10)
 
     def detect_plagiarism_wikipedia(self):
         text = self.text_entry.get("1.0", tk.END).strip()
@@ -79,6 +83,10 @@ class PlagiarismDetectorApp:
         # Check if a search result is relevant based on specific criteria
         # You can customize this method to define relevance based on your requirements
         return 'title' in result and 'snippet' in result
+
+    def return_back(self):
+        # Execute online.py file using subprocess
+        subprocess.Popen(["python", "start.py"])
 
 if __name__ == "__main__":
     root = tk.Tk()
